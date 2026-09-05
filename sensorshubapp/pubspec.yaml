@@ -1,0 +1,48 @@
+name: sensorshubapp
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  webview_flutter: ^4.9.0
+  webview_flutter_android: ^3.16.0
+  url_launcher: ^6.3.0
+  file_picker: ^12.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/sensorshub_logo.png
+
+  fonts:
+    - family: Orbitron
+      fonts:
+        - asset: assets/fonts/Orbitron-ExtraBold.ttf
+          weight: 800
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/sensorshub_logo.png"
+  min_sdk_android: 21
+  background_color_ios: "#080F18"
+  adaptive_icon_background: "#080F18"
+  adaptive_icon_foreground: "assets/images/sensorshub_logo.png"
