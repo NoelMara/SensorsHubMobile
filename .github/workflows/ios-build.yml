@@ -21,7 +21,9 @@ jobs:
           channel: 'stable'
 
       - name: Get dependencies
+        working-directory: sensorshubapp
         run: flutter pub get
 
       - name: Build iOS
+        working-directory: sensorshubapp
         run: flutter build ios --release --no-codesign
