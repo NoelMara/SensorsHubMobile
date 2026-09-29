@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:file_picker/file_picker.dart';
@@ -48,6 +49,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void _setupWebView() {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel(
+        'DownloadChannel',
+        onMessageReceived: (message) {
+          _saveProjectDownload(message.message);
+        },
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (url) {
@@ -71,6 +78,23 @@ class _WebViewScreenState extends State<WebViewScreen> {
       androidController.setOnShowFileSelector(
         _androidFileSelector,
       );
+    }
+  }
+
+  // ============================================================
+  // WEBVIEW DOWNLOADS
+  // ============================================================
+
+  Future<void> _saveProjectDownload(String encodedJson) async {
+    try {
+      final bytes = base64Decode(encodedJson);
+      await FilePicker.platform.saveFile(
+        dialogTitle: 'Save SensorsHub project',
+        fileName: 'sensorshub-project.json',
+        bytes: bytes,
+      );
+    } catch (e) {
+      debugPrint('Could not save project download: $e');
     }
   }
 
