@@ -88,7 +88,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Future<void> _saveProjectDownload(String encodedJson) async {
     try {
       final bytes = base64Decode(encodedJson);
-      await FilePicker.platform.saveFile(
+      await FilePicker.saveFile(
         dialogTitle: 'Save SensorsHub project',
         fileName: 'sensorshub-project.json',
         bytes: bytes,
