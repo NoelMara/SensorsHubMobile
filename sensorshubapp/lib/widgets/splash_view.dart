@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import 'error_view.dart';
 
-// The full splash screen: logo, title, subtitle, progress bar / error state.
-// All the fade-in animations are controlled from outside via the opacity values.
+// Loading and connection-error overlay for the WebView.
 class SplashView extends StatelessWidget {
   final double logoOpacity;
   final double titleOpacity;
@@ -27,12 +26,11 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: kDarkNavy,
+      color: kDarkNavy.withValues(alpha: 0.94),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Logo: fades in and slides down slightly
             AnimatedSlide(
               offset: logoOpacity == 1 ? Offset.zero : const Offset(0, -0.6),
               duration: const Duration(milliseconds: 600),
@@ -42,14 +40,13 @@ class SplashView extends StatelessWidget {
                 duration: const Duration(milliseconds: 600),
                 child: Image.asset(
                   'assets/images/sensorshub_logo.png',
-                  width: 175,
-                  height: 175,
+                  width: 120,
+                  height: 120,
                 ),
               ),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 20),
 
-            // Title: "SENSORSHUB"
             AnimatedOpacity(
               opacity: titleOpacity,
               duration: const Duration(milliseconds: 600),
@@ -64,44 +61,25 @@ class SplashView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 28),
 
-            // Subtitle tagline
-            AnimatedOpacity(
-              opacity: subtitleOpacity,
-              duration: const Duration(milliseconds: 600),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 60),
-                child: Text(
-                  'Learn Sensors. Build Projects. Share Ideas.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: kTextSecondary, fontSize: 12),
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // Either the loading bar, or the error view — never both
             if (!showError)
               AnimatedOpacity(
                 opacity: loadingOpacity,
                 duration: const Duration(milliseconds: 300),
                 child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(3),
-                      child: SizedBox(
-                        width: 130,
-                        height: 5,
-                        child: LinearProgressIndicator(
-                          backgroundColor: const Color(0xFF0C1621),
-                          valueColor: const AlwaysStoppedAnimation(kAccentCyan),
-                        ),
+                    const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor: AlwaysStoppedAnimation(kAccentCyan),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 14),
                     Text(
-                      loadingLabel,
+                      'LOADING SENSORS HUB',
                       style: const TextStyle(
                         fontFamily: 'Orbitron',
                         fontWeight: FontWeight.w800,

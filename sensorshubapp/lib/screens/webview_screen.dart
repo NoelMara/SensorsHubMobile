@@ -40,6 +40,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
     _setupWebView();
     _startSplashAnimation();
+    _startTimeoutTimer();
   }
 
   // ============================================================
@@ -302,7 +303,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
           });
         }
 
-        _startTimeoutTimer();
       },
     );
   }

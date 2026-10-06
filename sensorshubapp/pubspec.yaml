@@ -45,4 +45,4 @@ flutter_launcher_icons:
   min_sdk_android: 21
   background_color_ios: "#080F18"
   adaptive_icon_background: "#080F18"
-  adaptive_icon_foreground: "assets/images/sensorshub_logo.png"
+  adaptive_icon_foreground: "assets/images/sensorshub_logo_padded.png"
