@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String kUrl = 'https://sensorshubv1.onrender.com/';
+const String kUrl = 'https://sensorshub.tech/';
 const int kLoadTimeoutMs = 45000;
 
 const Color kAccentCyan = Color(0xFF38D8EA);
