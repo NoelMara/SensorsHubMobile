@@ -60,6 +60,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
         NavigationDelegate(
           onPageFinished: (url) {
             _onPageFinished();
+            _installCsvDownloadBridge();
           },
           onWebResourceError: (error) {
             _onWebResourceError(error);
@@ -86,12 +87,73 @@ class _WebViewScreenState extends State<WebViewScreen> {
   // WEBVIEW DOWNLOADS
   // ============================================================
 
+  Future<void> _installCsvDownloadBridge() async {
+    await _controller.runJavaScript(r'''
+      (() => {
+        if (window.__sensorsHubCsvBridgeInstalled) return;
+        window.__sensorsHubCsvBridgeInstalled = true;
+
+        document.addEventListener('click', async (event) => {
+          const link = event.target.closest('a');
+          if (!link || typeof DownloadChannel === 'undefined') return;
+
+          const label = (link.textContent || '').trim().toLowerCase();
+          if (!label.includes('download csv')) return;
+
+          event.preventDefault();
+
+          try {
+            const response = await fetch(link.href, {
+              credentials: 'include'
+            });
+
+            if (!response.ok) {
+              throw new Error('CSV download failed: ' + response.status);
+            }
+
+            const blob = await response.blob();
+            const reader = new FileReader();
+
+            reader.onload = () => {
+              DownloadChannel.postMessage(JSON.stringify({
+                fileName: 'gradebook.csv',
+                base64: reader.result.split(',')[1]
+              }));
+            };
+
+            reader.readAsDataURL(blob);
+          } catch (error) {
+            console.error('CSV download error', error);
+          }
+        }, true);
+      })();
+    ''');
+  }
+
   Future<void> _saveProjectDownload(String encodedJson) async {
     try {
-      final bytes = base64Decode(encodedJson);
+      // The web page may send either the old raw base64 payload or a JSON
+      // envelope: {"fileName":"report.csv","base64":"..."}.
+      var fileName = 'sensorshub-project.json';
+      var encodedData = encodedJson;
+
+      try {
+        final payload = jsonDecode(encodedJson);
+        if (payload is Map<String, dynamic> && payload['base64'] is String) {
+          encodedData = payload['base64'] as String;
+          final requestedName = payload['fileName'];
+          if (requestedName is String && requestedName.trim().isNotEmpty) {
+            fileName = requestedName.split(RegExp(r'[\\/]')).last;
+          }
+        }
+      } on FormatException {
+        // Keep supporting the original raw-base64 message.
+      }
+
+      final bytes = base64Decode(encodedData);
       await FilePicker.saveFile(
-        dialogTitle: 'Save SensorsHub project',
-        fileName: 'sensorshub-project.json',
+        dialogTitle: 'Save SensorsHub export',
+        fileName: fileName,
         bytes: bytes,
       );
     } catch (e) {
